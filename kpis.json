@@ -1,0 +1,101 @@
+{
+  "customers": 2000,
+  "products": 240,
+  "sessions": 11650,
+  "events": 64085,
+  "orders": 2076,
+  "gmv": 1341613.55,
+  "aov": 646.25,
+  "conversion_rate": 17.82,
+  "revenue_by_category": {
+    "Electronics": 662988.69,
+    "Sports": 272947.16,
+    "Home & Kitchen": 196434.05,
+    "Fashion": 89250.39,
+    "Beauty": 82666.18,
+    "Grocery": 37327.08
+  },
+  "tier": {
+    "Bronze": {
+      "orders": 304,
+      "gmv": 228942.82,
+      "aov": 753.1
+    },
+    "Silver": {
+      "orders": 511,
+      "gmv": 346098.12,
+      "aov": 677.3
+    },
+    "Gold": {
+      "orders": 811,
+      "gmv": 494336.97,
+      "aov": 609.54
+    },
+    "Platinum": {
+      "orders": 450,
+      "gmv": 272235.64,
+      "aov": 604.97
+    }
+  },
+  "channel": {
+    "mobile_app": 613499.72,
+    "web": 514249.61,
+    "mobile_web": 213864.22
+  },
+  "language": {
+    "en": 1101,
+    "ar": 899
+  },
+  "funnel": {
+    "views": 38468,
+    "add_to_cart": 7671,
+    "orders": 2076
+  },
+  "monthly_gmv": {
+    "2026-07": 377491.75,
+    "2026-08": 517287.01,
+    "2026-09": 446834.79
+  },
+  "top_products": [
+    {
+      "name": "Mistral Tablet",
+      "category": "Electronics",
+      "revenue": 49295.99
+    },
+    {
+      "name": "Aurora Headphones",
+      "category": "Electronics",
+      "revenue": 48680.28
+    },
+    {
+      "name": "Verda Laptop",
+      "category": "Electronics",
+      "revenue": 42309.8
+    },
+    {
+      "name": "Kyro Camera",
+      "category": "Electronics",
+      "revenue": 39498.5
+    },
+    {
+      "name": "Onyx Tablet",
+      "category": "Electronics",
+      "revenue": 35168.27
+    },
+    {
+      "name": "Lumio Tablet",
+      "category": "Electronics",
+      "revenue": 34911.38
+    },
+    {
+      "name": "Lumio Camera",
+      "category": "Electronics",
+      "revenue": 34070.06
+    },
+    {
+      "name": "Verda Smartwatch",
+      "category": "Electronics",
+      "revenue": 33594.75
+    }
+  ]
+}

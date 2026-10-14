@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopSphere — Retail Personalization Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/highcharts@12.1.2/highcharts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highcharts@12.1.2/modules/funnel.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highcharts@12.1.2/modules/accessibility.js"></script>
+<style>
+:root{
+  --bg:#f7f6fb; --surface:#ffffff; --text:#1a1a2e; --muted:#6b7280;
+  --primary:#6d28d9; --primary2:#9333ea; --success:#16a34a; --info:#2563eb;
+  --warning:#f59e0b; --border:#ebe9f1;
+  --c1:#6d28d9; --c2:#2563eb; --c3:#16a34a; --c4:#f59e0b; --c5:#ec4899; --c6:#06b6d4;
+  --font:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'SF Mono','Consolas',monospace;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);margin:0;padding:28px;}
+.header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px;}
+.brand{display:flex;align-items:center;gap:14px;}
+.logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary2));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:700;box-shadow:0 4px 14px rgba(109,40,217,.35);}
+h1{font-size:22px;margin:0;font-weight:700;}
+.sub{color:var(--muted);font-size:13px;margin-top:2px;}
+.pill{background:#f3e8ff;color:var(--primary);font-size:12px;font-weight:600;padding:6px 12px;border-radius:100px;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:22px 0;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.kpi .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+.kpi .value{font-size:26px;font-weight:700;font-family:var(--mono);margin-top:6px;}
+.kpi .delta{font-size:12px;margin-top:4px;color:var(--success);font-weight:600;}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+.grid3{display:grid;grid-template-columns:2fr 1fr;gap:18px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card h3{margin:0 0 4px;font-size:15px;font-weight:700;}
+.card .cap{color:var(--muted);font-size:12px;margin-bottom:10px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+td{padding:9px 10px;border-bottom:1px solid var(--border);}
+td.num{font-family:var(--mono);text-align:right;}
+.tag{font-size:11px;padding:2px 8px;border-radius:100px;background:#f3e8ff;color:var(--primary);font-weight:600;}
+.footer{color:var(--muted);font-size:11px;text-align:center;margin-top:22px;}
+@media(max-width:820px){.grid,.grid3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="brand">
+    <div class="logo">S</div>
+    <div>
+      <h1>ShopSphere — Retail Personalization Engine</h1>
+      <div class="sub">Customer 360 · Next-Best-Product ML · Agentic Shopping Assistant &nbsp;|&nbsp; MENAT Industry AI Accelerator</div>
+    </div>
+  </div>
+  <span class="pill">● Live demo data (synthetic)</span>
+</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="label">GMV (90d)</div><div class="value">$1.34M</div><div class="delta">▲ personalization-driven</div></div>
+  <div class="kpi"><div class="label">Orders</div><div class="value">2,076</div><div class="delta">▲ 17.8% session conv.</div></div>
+  <div class="kpi"><div class="label">Avg Order Value</div><div class="value">$646</div><div class="delta">▲ cross-sell lift</div></div>
+  <div class="kpi"><div class="label">Customers</div><div class="value">2,000</div><div class="delta">4 loyalty tiers</div></div>
+  <div class="kpi"><div class="label">Catalog SKUs</div><div class="value">240</div><div class="delta">6 categories</div></div>
+  <div class="kpi"><div class="label">Sessions</div><div class="value">11,650</div><div class="delta">64K events</div></div>
+</div>
+
+<div class="grid3" style="margin-bottom:18px;">
+  <div class="card">
+    <h3>Monthly GMV Trend</h3>
+    <div class="cap">Gross merchandise value by month — serving layer: Redshift Direct Query (no SPICE limits)</div>
+    <div id="trend" style="height:300px;"></div>
+  </div>
+  <div class="card">
+    <h3>Conversion Funnel</h3>
+    <div class="cap">Views → Cart → Order</div>
+    <div id="funnel" style="height:300px;"></div>
+  </div>
+</div>
+
+<div class="grid" style="margin-bottom:18px;">
+  <div class="card">
+    <h3>Revenue by Category</h3>
+    <div class="cap">Electronics leads — drives recommendation weighting</div>
+    <div id="category" style="height:320px;"></div>
+  </div>
+  <div class="card">
+    <h3>GMV &amp; AOV by Loyalty Tier</h3>
+    <div class="cap">Next-best-action targets higher tiers · User Profile Awareness</div>
+    <div id="tier" style="height:320px;"></div>
+  </div>
+</div>
+
+<div class="grid" style="margin-bottom:18px;">
+  <div class="card">
+    <h3>Revenue by Channel</h3>
+    <div class="cap">Mobile app leads — multimodal + voice assistant surface</div>
+    <div id="channel" style="height:300px;"></div>
+  </div>
+  <div class="card">
+    <h3>Top Products (by revenue)</h3>
+    <div class="cap">Feeds the next-best-product reco engine</div>
+    <table id="topprod"><thead><tr><th>Product</th><th>Category</th><th style="text-align:right">Revenue</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div class="footer">
+  ShopSphere is a fictional retailer. All data is synthetic. Architecture: S3 → Glue/Iceberg → Redshift (ML + serving) → QuickSight · S3 Vectors + Bedrock AgentCore (UAE me-central-1 compatible).
+</div>
+
+<script>
+const DATA = {
+  revenue_by_category: {"Electronics":662988.69,"Sports":272947.16,"Home & Kitchen":196434.05,"Fashion":89250.39,"Beauty":82666.18,"Grocery":37327.08},
+  tier: {"Bronze":{"orders":304,"gmv":228942.82,"aov":753.1},"Silver":{"orders":511,"gmv":346098.12,"aov":677.3},"Gold":{"orders":811,"gmv":494336.97,"aov":609.54},"Platinum":{"orders":450,"gmv":272235.64,"aov":604.97}},
+  channel: {"mobile_app":613499.72,"web":514249.61,"mobile_web":213864.22},
+  monthly_gmv: {"2026-07":377491.75,"2026-08":517287.01,"2026-09":446834.79},
+  funnel: {"views":38468,"add_to_cart":7671,"orders":2076},
+  top_products: [{"name":"Mistral Tablet","category":"Electronics","revenue":49295.99},{"name":"Aurora Headphones","category":"Electronics","revenue":48680.28},{"name":"Verda Laptop","category":"Electronics","revenue":42309.8},{"name":"Kyro Camera","category":"Electronics","revenue":39498.5},{"name":"Onyx Tablet","category":"Electronics","revenue":35168.27},{"name":"Lumio Tablet","category":"Electronics","revenue":34911.38},{"name":"Lumio Camera","category":"Electronics","revenue":34070.06},{"name":"Verda Smartwatch","category":"Electronics","revenue":33594.75}]
+};
+const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+const PAL=[g('--c1'),g('--c2'),g('--c3'),g('--c4'),g('--c5'),g('--c6')];
+const base={chart:{backgroundColor:'transparent',style:{fontFamily:g('--font')}},credits:{enabled:false},
+  title:{text:null},legend:{itemStyle:{color:g('--muted')}},
+  xAxis:{labels:{style:{color:g('--muted')}},lineColor:g('--border'),tickColor:g('--border')},
+  yAxis:{labels:{style:{color:g('--muted')}},gridLineColor:g('--border'),title:{style:{color:g('--muted')}}},
+  tooltip:{backgroundColor:g('--surface'),borderColor:g('--border'),style:{color:g('--text')}}};
+
+// Trend
+Highcharts.chart('trend',Highcharts.merge(base,{chart:{type:'areaspline'},
+  xAxis:{categories:Object.keys(DATA.monthly_gmv).map(m=>({'2026-07':'Jul','2026-08':'Aug','2026-09':'Sep'}[m]||m))},
+  yAxis:{title:{text:'GMV ($)'},labels:{formatter(){return '$'+(this.value/1000)+'K'}}},
+  colors:[g('--primary')],
+  plotOptions:{areaspline:{fillOpacity:.18,marker:{radius:4}}},
+  tooltip:{valuePrefix:'$'},
+  series:[{name:'GMV',data:Object.values(DATA.monthly_gmv)}]}));
+
+// Funnel
+Highcharts.chart('funnel',Highcharts.merge(base,{chart:{type:'funnel'},
+  colors:PAL,
+  plotOptions:{funnel:{dataLabels:{enabled:true,format:'<b>{point.name}</b>: {point.y:,.0f}',color:g('--text'),softConnector:true},neckWidth:'28%',neckHeight:'22%',width:'80%'}},
+  series:[{name:'Funnel',data:[['Views',DATA.funnel.views],['Add to Cart',DATA.funnel.add_to_cart],['Orders',DATA.funnel.orders]]}]}));
+
+// Category
+Highcharts.chart('category',Highcharts.merge(base,{chart:{type:'bar'},
+  xAxis:{categories:Object.keys(DATA.revenue_by_category)},
+  yAxis:{title:{text:'Revenue ($)'},labels:{formatter(){return '$'+(this.value/1000)+'K'}}},
+  colors:[g('--primary')],
+  plotOptions:{bar:{colorByPoint:true,colors:PAL,dataLabels:{enabled:true,formatter(){return '$'+Highcharts.numberFormat(this.y/1000,0)+'K'},style:{color:g('--text')}}}},
+  tooltip:{valuePrefix:'$'},
+  series:[{name:'Revenue',data:Object.values(DATA.revenue_by_category)}]}));
+
+// Tier (dual axis)
+const tiers=Object.keys(DATA.tier);
+Highcharts.chart('tier',Highcharts.merge(base,{
+  xAxis:{categories:tiers},
+  yAxis:[{title:{text:'GMV ($)'},labels:{formatter(){return '$'+(this.value/1000)+'K'}}},
+         {title:{text:'AOV ($)'},opposite:true}],
+  colors:PAL,
+  series:[{name:'GMV',type:'column',data:tiers.map(t=>DATA.tier[t].gmv),color:g('--primary'),yAxis:0,tooltip:{valuePrefix:'$'}},
+          {name:'AOV',type:'spline',data:tiers.map(t=>DATA.tier[t].aov),color:g('--warning'),yAxis:1,tooltip:{valuePrefix:'$'}}]}));
+
+// Channel
+Highcharts.chart('channel',Highcharts.merge(base,{chart:{type:'pie'},
+  colors:PAL,
+  plotOptions:{pie:{innerSize:'58%',dataLabels:{enabled:true,format:'{point.name}: {point.percentage:.0f}%',style:{color:g('--text')}}}},
+  tooltip:{valuePrefix:'$'},
+  series:[{name:'Revenue',data:Object.entries(DATA.channel).map(([k,v])=>({name:k.replace('_',' '),y:v}))}]}));
+
+// Top products table
+const tb=document.querySelector('#topprod tbody');
+DATA.top_products.forEach(p=>{tb.insertAdjacentHTML('beforeend',
+  `<tr><td>${p.name}</td><td><span class="tag">${p.category}</span></td><td class="num">$${Highcharts.numberFormat(p.revenue,0)}</td></tr>`);});
+</script>
+</body>
+</html>
